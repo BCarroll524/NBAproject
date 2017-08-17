@@ -1,5 +1,9 @@
 import tweepy
 import urllib2
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy import func
+from database_setup import Base, Team, Media, Tweets
 
 CONSUMER_KEY = 'iBaC5IkDaRNzFp7VU8ijeEDa6'
 CONSUMER_SECRET = 'G8SkwtF63MxWLGQP4gmnRZTkAs7Xqi3B5w1p0PQS2jkZDZlUVG'
@@ -11,6 +15,12 @@ auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
 auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
 
 api = tweepy.API(auth)
+
+engine = create_engine('sqlite:///nba_proj.db')
+Base.metadata.bind = engine
+
+DBSession = sessionmaker(bind = engine)
+session = DBSession()
 
 
 def getTweets(text):
