@@ -32,6 +32,8 @@ class Media(Base):
 	text = Column(String(300), nullable = False)
 	likes = Column(Integer)
 	tweet_id = Column(Integer)
+	width = Column(Integer)
+	height = Column(Integer)
 	team_id = Column(Integer, ForeignKey('team.id'))
 	team = relationship(Team)
 

@@ -70,7 +70,8 @@ def getMedia(user):
 				'url' : url,
 				'text' : tweet.text,
 				'sizes' : sizes,
-				'likes' : tweet.favorite_count
+				'likes' : tweet.favorite_count,
+				'id' : tweet.id
 			}
 			media.append(pic)
 
@@ -84,7 +85,17 @@ def getMedia(user):
 	for x in range(5):
 		topMedia.append(media[x])
 
-	
+	print(topMedia[0].get('sizes').get('medium').get('w'))
+	for media in topMedia:
+		newMedia = Media(image = media.get('url'), text = media.get('text'))
+		newMedia.likes = media.get('likes')
+		newMedia.tweet_id = media.get('id')
+		newMedia.width = media.get('sizes').get('medium').get('w')
+		newMedia.height = media.get('sizes').get('medium').get('h')
+		newMedia.team_id = user.id
+		session.add(newMedia)
+	session.commit()
+
 
 	return topMedia
 
@@ -132,6 +143,20 @@ def populateWest():
 		session.add(newTeam)
 		session.commit()
 
+def populateOthers():
+	teams = []
+	teams.append(api.get_user('warriors'))
+	teams.append(api.get_user('houstonrockets'))
+	teams.append(api.get_user('memgrizz'))
+	teams.append(api.get_user('pelicansnba'))
+	teams.append(api.get_user('timberwolves'))
+	teams.append(api.get_user('atlhawks'))
+	for team in teams:
+		newTeam = Team(name = team.name, image = team.profile_image_url, screen_name = team.screen_name)
+		newTeam.user_id = team.id
+		session.add(newTeam)
+	session.commit()
+
 
 def levenshtein(s1, s2):
     if len(s1) < len(s2):
@@ -171,9 +196,11 @@ def getTeam(string):
 
 if __name__ == '__main__':
 
-	team = getTeam('lakers')
-	getTweets(team)
-	getMedia(team)
+	# team = getTeam('clippers')
+	# getTweets(team)
+	# getMedia(team)
+
 	
 	
+
 
