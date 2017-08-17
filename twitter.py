@@ -23,32 +23,40 @@ DBSession = sessionmaker(bind = engine)
 session = DBSession()
 
 
-def getTweets(text):
+def getTweets(team):
 	tweets = []
-	for tweet in tweepy.Cursor(api.search, q=text, result_type='popular').items(1000):
+	for tweet in tweepy.Cursor(api.search, q=team.name, result_type='popular', count=1000).items(1000):
 		tweets.append(tweet)
 	print(len(tweets))
 	for i in range(len(tweets)):
 		for j in range(i, len(tweets)):
 			if (tweets[i].favorite_count < tweets[j].favorite_count):
 				tweets[i], tweets[j] = tweets[j], tweets[i]
+	print(len(tweets))
+
 	for tweet in tweets:
-		print(tweet.user.name)
-		print(tweet.text)
-		print(tweet.favorite_count)
-		print '\n'
+		if len(session.query(Tweets).filter(Tweets.tweet_id == tweet.id).all()) == 0:
+			print('tweet not in DB')
+			newTweet = Tweets(user = tweet.user.name, text = tweet.text)
+			newTweet.tweet_id = tweet.id
+			newTweet.likes = tweet.favorite_count
+			newTweet.team_id = team.id
+			session.add(newTweet)
+			session.commit()
+		else:
+			print('tweet in db')
+
 	return tweets 
 
 def findTeam(text):
 	users = api.search_users(q=text, per_page=1, page=1)
 	official = users[0]
 	for user in users:
-		if str(user.verified) == 'True':
+		if str(user.verified) == 'True' and user.url:
 			if official.followers_count < user.followers_count:
 				official = user
-	print(official.screen_name)
-	print(official.followers_count)
 	return official
+
 
 def getMedia(user):
 	media = []
@@ -76,17 +84,96 @@ def getMedia(user):
 	for x in range(5):
 		topMedia.append(media[x])
 
+	
 
 	return topMedia
 
+def populateEast():
+	east = []
+
+	east.append(findTeam('celtics'))
+	east.append(findTeam('toronto raptors'))
+	east.append(findTeam('nyknicks'))
+	east.append(findTeam('76ers'))
+	east.append(findTeam('brooklyn nets'))
+	east.append(findTeam('cavs'))
+	east.append(findTeam('bucks'))
+	east.append(findTeam('pacers'))
+	east.append(findTeam('chicago bulls'))
+	east.append(findTeam('detroit pistons'))
+	east.append(findTeam('washington wizards'))
+	east.append(findTeam('heat'))
+	east.append(findTeam('charlotte hornets'))
+	east.append(findTeam('orlando magic'))
+
+	for team in east:
+		newTeam = Team(name = team.name, image = team.profile_image_url, screen_name = team.screen_name)
+		newTeam.user_id = team.id
+		session.add(newTeam)
+		session.commit()
+
+def populateWest():
+	west = []
+
+	west.append(findTeam('spurs'))
+	west.append(findTeam('clippers'))
+	west.append(findTeam('jazz'))
+	west.append(findTeam('thunder'))
+	west.append(findTeam('trail blazers'))
+	west.append(findTeam('denver nuggets'))
+	west.append(findTeam('dallas mavericks'))
+	west.append(findTeam('lakers'))
+	west.append(findTeam('phoenix suns'))
+	west.append(findTeam('sacramento kings'))
+
+	for team in west:
+		newTeam = Team(name = team.name, image = team.profile_image_url, screen_name = team.screen_name)
+		newTeam.user_id = team.id
+		session.add(newTeam)
+		session.commit()
+
+
+def levenshtein(s1, s2):
+    if len(s1) < len(s2):
+        return levenshtein(s2, s1)
+
+    # len(s1) >= len(s2)
+    if len(s2) == 0:
+        return len(s1)
+
+    previous_row = range(len(s2) + 1)
+    for i, c1 in enumerate(s1):
+        current_row = [i + 1]
+        for j, c2 in enumerate(s2):
+            insertions = previous_row[j + 1] + 1 # j+1 instead of j since previous_row and current_row are one character longer
+            deletions = current_row[j] + 1       # than s2
+            substitutions = previous_row[j] + (c1 != c2)
+            current_row.append(min(insertions, deletions, substitutions))
+        previous_row = current_row
+    
+    return previous_row[-1]
+
+def getTeam(string):
+	# parameter is the search query from beggining route
+	# compare to all teams in DB and see which one has lowest edit distance
+	teams = session.query(Team).all()
+	distances = []
+	for team in teams:
+		temp = team.name.split()
+		distances.append(levenshtein(string, temp[len(temp)-1]))
+
+	minPos = 0
+	for x in range(len(distances)):
+		if distances[x] < distances[minPos]:
+			minPos = x
+	print(teams[minPos].name)
+	return teams[minPos]
 
 if __name__ == '__main__':
 
-	getTweets('lakers')
+	team = getTeam('lakers')
+	getTweets(team)
+	getMedia(team)
+	
+	
 
-	# searched_tweets = api.search(q='lakers', count = 50, result_type='popular')
-	# print(searched_tweets)
-	# print(len(searched_tweets))
-	# print(searched_tweets[0].entities)
-
-	# timeline = api.user_timeline(screen_name='lakers', count=50)

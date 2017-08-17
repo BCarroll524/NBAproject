@@ -11,12 +11,16 @@ class Team(Base):
 	id = Column(Integer, primary_key = True)
 	name = Column(String(80), nullable = False)
 	image = Column(String(1000), nullable = False)
+	screen_name = Column(String(80))
+	user_id = Column(Integer)
 
 	@property
 	def serialize(self):
 		return {
 			'name' : self.name,
 			'image' : self.image,
+			'screen_name' : self.screen_name,
+			'user_id' : self.user_id,
 			'id' : self.id
 		}
 
@@ -27,7 +31,7 @@ class Media(Base):
 	image = Column(String(1000), nullable = False)
 	text = Column(String(300), nullable = False)
 	likes = Column(Integer)
-	tweet_id = Column(In)
+	tweet_id = Column(Integer)
 	team_id = Column(Integer, ForeignKey('team.id'))
 	team = relationship(Team)
 
@@ -48,6 +52,7 @@ class Tweets(Base):
 	id = Column(Integer, primary_key = True)
 	user = Column(String(200), nullable = False)
 	text = Column(String(300), nullable = False)
+	tweet_id = Column(Integer)
 	likes = Column(Integer)
 	team_id = Column(Integer, ForeignKey('team.id'))
 	team = relationship(Team)
