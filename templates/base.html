@@ -1,0 +1,33 @@
+<html>
+	<link rel="stylesheet" media="screen" href = "{{ url_for('static', filename='css/bootstrap.min.css') }}">
+	<link rel="stylesheet" href = "{{ url_for('static', filename='css/styles.css') }}">
+	<meta name="viewport" content = "width=device-width, initial-scale=1.0">
+<head>
+</head>
+
+<body>
+	<div class='container padding-top--xl'>
+			<div class='row top-buffer'>
+				<div class='col-lg-6 col-lg-offset-3'>
+				<form action="{{ url_for('search') }}" method='post'>
+					<div class='input-group input-group-lg'>
+						<input type='text' class='form-control' placeholder="Search for your favorite NBA team..." aria-label="Search for your favorite NBA team..." name='team'>
+						<span class='input-group-btn'>
+							<button class='btn btn-primary' type='submit'>Go!</button>
+						</span>
+					</div>
+					{% if invalid %}
+						<div class='invalid-feedback'>
+								  Please input a valid NBA team.
+						</div>
+					{% endif %}
+				</form>
+				</div>
+			</div>
+		</div>
+</body>
+
+<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0-rc1/js/bootstrap.min.js"></script>
+
+</html>

@@ -1,0 +1,7 @@
+.top-buffer { margin-top: 200px; }
+
+body {
+	background-color: #000080;
+}
+
+.invalid-feedback { color: #FF0000; }

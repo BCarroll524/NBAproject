@@ -23,7 +23,9 @@ DBSession = sessionmaker(bind = engine)
 session = DBSession()
 
 
+# add tweets from the team to the database
 def getTweets(team):
+
 	tweets = []
 	for tweet in tweepy.Cursor(api.search, q=team.name, result_type='popular', count=1000).items(1000):
 		tweets.append(tweet)
@@ -46,7 +48,7 @@ def getTweets(team):
 		else:
 			print('tweet in db')
 
-	return tweets 
+	
 
 def findTeam(text):
 	users = api.search_users(q=text, per_page=1, page=1)
@@ -58,6 +60,7 @@ def findTeam(text):
 	return official
 
 
+# adds media to the database of given team
 def getMedia(user):
 	media = []
 	tweets = api.user_timeline(screen_name=str(user.screen_name), count=200, page=1)
@@ -85,19 +88,21 @@ def getMedia(user):
 	for x in range(5):
 		topMedia.append(media[x])
 
-	print(topMedia[0].get('sizes').get('medium').get('w'))
 	for media in topMedia:
-		newMedia = Media(image = media.get('url'), text = media.get('text'))
-		newMedia.likes = media.get('likes')
-		newMedia.tweet_id = media.get('id')
-		newMedia.width = media.get('sizes').get('medium').get('w')
-		newMedia.height = media.get('sizes').get('medium').get('h')
-		newMedia.team_id = user.id
-		session.add(newMedia)
-	session.commit()
+		if len(session.query(Media).filter(Media.tweet_id == tweet.id).all()) == 0:
+			print('media not in DB')
+			newMedia = Media(image = media.get('url'), text = media.get('text'))
+			newMedia.likes = media.get('likes')
+			newMedia.tweet_id = media.get('id')
+			newMedia.width = media.get('sizes').get('medium').get('w')
+			newMedia.height = media.get('sizes').get('medium').get('h')
+			newMedia.team_id = user.id
+			session.add(newMedia)
+			session.commit()
+		else:
+			print('media in DB')
 
 
-	return topMedia
 
 def populateEast():
 	east = []
@@ -187,20 +192,29 @@ def getTeam(string):
 		temp = team.name.split()
 		distances.append(levenshtein(string, temp[len(temp)-1]))
 
+
 	minPos = 0
 	for x in range(len(distances)):
 		if distances[x] < distances[minPos]:
 			minPos = x
 	print(teams[minPos].name)
-	return teams[minPos]
+	print(distances[minPos])
+
+	if distances[minPos] > 3:
+		return None
+	else:
+		return teams[minPos]
 
 if __name__ == '__main__':
+
 
 	# team = getTeam('clippers')
 	# getTweets(team)
 	# getMedia(team)
 
-	
+	team = getTeam('lakers')
+	if team == None:
+		print('bad input')
 	
 
 

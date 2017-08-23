@@ -1,0 +1,28 @@
+{% extends 'bootstrap/base.html' %}
+
+{% block body %}
+	{% block content %}
+	<body>
+		<div class='container padding-top--xl'>
+			<div class='row top-buffer'>
+				<div class='col-lg-6 col-lg-offset-3'>
+
+					<div class='input-group input-group-lg'>
+						<input type='text' class='form-control' placeholder="Search for your favorite NBA team..." aria-label="Search for your favorite NBA team..." name='team'>
+						<span class='input-group-btn'>
+							<button class='btn btn-primary' type='submit'>Go!</button>
+						</span>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</body>
+
+	{% endblock %}
+{% endblock %}
+
+{% block styles %}
+{{ super() }}
+<link rel='stylesheet' href="{{ url_for('static', filename='css/styles.css') }}">
+{% endblock %}
