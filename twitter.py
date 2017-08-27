@@ -89,7 +89,7 @@ def getMedia(user):
 		topMedia.append(media[x])
 
 	for media in topMedia:
-		if len(session.query(Media).filter(Media.tweet_id == tweet.id).all()) == 0:
+		if len(session.query(Media).filter(Media.tweet_id == media.get('id')).all()) == 0:
 			print('media not in DB')
 			newMedia = Media(image = media.get('url'), text = media.get('text'))
 			newMedia.likes = media.get('likes')
@@ -212,9 +212,16 @@ if __name__ == '__main__':
 	# getTweets(team)
 	# getMedia(team)
 
-	team = getTeam('lakers')
-	if team == None:
-		print('bad input')
+	teams = session.query(Team).all()
+	for team in teams:
+		print('collecting info for:')
+		print(team.name)
+		getTweets(team)
+		getMedia(team)
+
+	print('DONE.')
+	
+
 	
 
 

@@ -1,7 +1,8 @@
 .top-buffer { margin-top: 200px; }
 
-body {
-	background-color: #000080;
-}
+/*html body {
+	background-color: rgba(0,0,0,1.00);
+}*/
 
-.invalid-feedback { color: #FF0000; }
+.invalid-feedback { color: #C83737; }
+

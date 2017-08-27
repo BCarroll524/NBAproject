@@ -43,6 +43,8 @@ class Media(Base):
 			'text' : self.text,
 			'image' : self.image,
 			'likes' : self.likes,
+			'width' : self.width,
+			'height' : self.height,
 			'id' : self.id
 		}
 
@@ -65,6 +67,7 @@ class Tweets(Base):
 			'user' : self.user,
 			'text' : self.text,
 			'likes' : self.likes,
+			'team_id' : self.team_id,
 			'id' : self.id
 		}
 

@@ -17,6 +17,45 @@ session = DBSession()
 
 global team
 
+def homeHelper(name):
+	global team
+
+	media = session.query(Media).filter(Media.team_id == team.id).all()
+	tweets = session.query(Tweets).filter(Tweets.team_id == team.id).all()
+
+	# sort media by likes
+	for i in range(len(media)):
+		for j in range(i, len(media)):
+			if(media[i].likes < media[j].likes):
+				media[i], media[j] = media[j], media[i]
+
+	topMedia = []
+	if len(media) > 5:
+		for i in range(5):
+			topMedia.append(media[i])
+	else:
+		for i in range(len(media)):
+			topMedia.append(media[i])
+
+	# sort tweets by likes
+	for i in range(len(tweets)):
+		for j in range(i, len(tweets)):
+			if(tweets[i].likes < tweets[j].likes):
+				tweets[i], tweets[j] = tweets[j], tweets[i]
+
+	topTweets = []
+	if len(tweets) > 8:
+		for i in range(8):
+			topTweets.append(tweets[i])
+	else:
+		for i in range(len(tweets)):
+			topTweets.append(tweets[i])
+
+	# return jsonify(Tweets = [m.serialize for m in topTweets])
+
+	return render_template('search.html', team=team, media=topMedia, tweets=topTweets)
+
+
 # add route where user types in search term and then will use that as a parameter for getTweets()
 
 @app.route('/', methods = ['GET', 'POST'])
@@ -41,41 +80,15 @@ def search():
 
 @app.route('/search/<string:name>', methods = ['GET', 'POST'])
 def home(name):
-	global team
+
+	if request.method == 'POST':
+		name = request.form['team']
+
+		return homeHelper(name)
+	else:
+		return homeHelper(name)
+
 	
-	
-	# add more tweets and db to media
-	# pull the top of each 
-
-	# getMedia(team)
-	# getTweets(team)
-	# if request.method == 'POST':
-
-	media = session.query(Media).filter(Media.team_id == team.id).all()
-	tweets = session.query(Tweets).filter(Tweets.team_id == team.id).all()
-
-	# sort media by likes
-	for i in range(len(media)):
-		for j in range(i, len(media)):
-			if(media[i].likes < media[j].likes):
-				media[i], media[j] = media[j], media[i]
-
-	topMedia = []
-	for i in range(5):
-		topMedia.append(media[i])
-
-	# sort tweets by likes
-	for i in range(len(tweets)):
-		for j in range(i, len(tweets)):
-			if(tweets[i].likes < tweets[j].likes):
-				tweets[i], tweets[j] = tweets[j], tweets[i]
-	topTweets = []
-	for i in range(10):
-		topTweets.append(tweets[i])
-
-	# return jsonify(Tweets = [m.serialize for m in topTweets])
-
-	return render_template('search.html', team=team)
 
 
 
