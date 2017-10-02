@@ -205,6 +205,14 @@ def getTeam(string):
 	else:
 		return teams[minPos]
 
+def addUserImages(tweet_id):
+	status = api.statuses_lookup([tweet_id])
+	url = status[0].user.profile_image_url
+
+	return url
+
+
+
 if __name__ == '__main__':
 
 
@@ -212,15 +220,30 @@ if __name__ == '__main__':
 	# getTweets(team)
 	# getMedia(team)
 
-	teams = session.query(Team).all()
-	for team in teams:
-		print('collecting info for:')
-		print(team.name)
-		getTweets(team)
-		getMedia(team)
+	# teams = session.query(Team).all()
+	# for team in teams:
+	# 	print('collecting info for:')
+	# 	print(team.name)
+	# 	getTweets(team)
+	# 	getMedia(team)
 
-	print('DONE.')
-	
+	# print('DONE.')
+
+	# status = api.statuses_lookup([899363605749129216])
+	# url = status[0].user.profile_image_url
+	# print(status[0].user.profile_image_url)
+
+	# tweet = session.query(Tweets).filter(Tweets.tweet_id == status[0].id).one()
+	# tweet.pic = str(url)
+	# print(tweet.pic)
+	# session.add(tweet)
+	# session.commit()
+	# test = session.query(Tweets).filter(Tweets.tweet_id == status[0].id).one()
+	# print('test:')
+	# print(test.pic)	
+
+	test = session.query(Tweets).filter(Tweets.tweet_id == 899363605749129216).one()
+	print(test.tweet_id)
 
 	
 

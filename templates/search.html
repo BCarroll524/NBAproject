@@ -1,13 +1,20 @@
 <!DOCTYPE HTML>
 <html>
-  <!-- <style type="text/css">
-     body { background: #aaaaaa !important; } /* Adding !important forces the browser to overwrite the default style applied by Bootstrap */
-  </style> -->
+  <style type="text/css">
+     .twitter { border-color: #0084b4 !important; } /* Adding !important forces the browser to overwrite the default style applied by Bootstrap */
+  </style>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/css/bootstrap.min.css" integrity="sha384-y3tfxAZXuh4HwSYylfB+J125MxIs6mR5FOHamPBG064zB+AFeWH94NdvaCBm8qnd" crossorigin="anonymous">
   <link rel="stylesheet" media="screen" href = "{{ url_for('static', filename='css/bootstrap.min.css') }}">
   <link rel="stylesheet" href = "{{ url_for('static', filename='css/carousel.css') }}">
-  <meta name="viewport" content = "width=device-width, initial-scale=1.0, shrink-to-fit=no">
 <head>
 </head>
+
+<!-- NAVBAR -->
 
 <body class = "body">
 <nav class="navbar navbar-fixed-top navbar-inverse navbar-expand-md" role="navigation">
@@ -39,7 +46,7 @@
   </div><!-- /.container-fluid -->
 </nav>
 
-<hr width="75%" align='center'>
+<!-- END NAVBAR -->
 
 
 <div id="carousel-example-generic" class="carousel slide">
@@ -79,10 +86,10 @@
 
 <!-- Controls -->
 <a class="left carousel-control" href="#carousel-example-generic" data-slide="prev">
-<span class="icon-prev"></span>
+  <span class="glyphicon glyphicon-chevron-left"></span>
 </a>
 <a class="right carousel-control" href="#carousel-example-generic" data-slide="next">
-<span class="icon-next"></span>
+  <span class="glyphicon glyphicon-chevron-right"></span>
 </a>
 </div>
 
@@ -90,34 +97,45 @@
 
 <!-- FEATURETTES -->
 
-<hr width="75%" align='center'>
-
   <div class="row featurette">
         <div class="col-md-8 col-md-offset-2">
-          <h2 class="featurette-heading">Find it here first! <span class="text-muted">Whats going on with the {{team.name}}...</span></h2>
+          <h2 class="featurette-heading text-center">Find it here first! <span class="text-muted">Whats going on with the {{team.name}}...</span></h2>
         </div>
 
-        <div class='container'>
+        
           
           {% for t in tweets %}
+         
+
             {% if loop.index0 is divisibleby 2 %}
+            <div class='container row-buffer'>
               <div class='row'>
                 <div class='col-sm-6'>
-                  <div class='card mb-3'>
+                  <div class='card twitter' style='width: 55rem;'>
                     <div class='card-body'>
-                      <h4 class='card-title'>{{ t.user }}</h4>
-                      <p class='card-text'>{{ t.text }}</p>
-                      <a href='#' class='btn btn-primary'>{{ t.likes }}</a>
+                      <div class='card-title clearfix'>
+                        <img class='pull-left img-rounded' src="{{ pics[loop.index0] }}">
+                        <h4 class='card-title'>{{ t.user }}</h4>
+                      </div>
+                      <div class='card-text text-center clearfix'>
+                        <p>{{ t.text }}</p>
+                        <a href='#' class='btn btn-primary pull-right'>{{ t.likes }} likes</a>
+                      </div>
                     </div>
                   </div>
                 </div>
             {% else %}
                 <div class='col-sm-6'>
-                  <div class='card mb-3'>
+                  <div class='card twitter' style='width: 55rem;'>
                     <div class='card-body'>
-                      <h4 class='card-title'>{{ t.user }}</h4>
-                      <p class='card-text'>{{ t.text }}</p>
-                      <a href='#' class='btn btn-primary'>{{ t.likes }}</a>
+                      <div class='card-title clearfix'>
+                        <img class='pull-left img-rounded' src="{{ pics[loop.index0] }}">
+                        <h4 class='card-title'>{{ t.user }}</h4>
+                      </div>
+                      <div class='card-text text-center clearfix'>
+                        <p>{{ t.text }}</p>
+                        <a href='#' class='btn btn-primary pull-right'>{{ t.likes }} likes</a>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -125,24 +143,32 @@
 
           {% endfor %}
 
-
         </div>
 
 
       </div>
+  </div>
 
-<hr width="75%" align='center'>
+  <hr class='featurette-divider'>
+  <div class='row-featurette'>
+    <div class='col-md-8 col-md-offset-2'>
+      <h2 class="featurette-heading text-center">Meet your <span class='text-muted'>{{ team.name }}</span> 2017 starters</h2>
+    </div>
 
 
 
-<!-- Javascript -->`
+
+
+
+<!-- Javascript -->
 
 <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0-rc1/js/bootstrap.min.js"></script>
-<script type="text/javascript" >
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+<!-- <script type="text/javascript" >
             $(document).ready(function() {        
         $('#carousel-example-generic').carousel();
             });
-</script>    
+</script>  -->   
 
 </html>

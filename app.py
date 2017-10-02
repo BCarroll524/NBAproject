@@ -1,6 +1,6 @@
 from flask import Flask, render_template, url_for, redirect, request, jsonify
 from flask_bootstrap import Bootstrap
-from twitter import getMedia, getTweets, getTeam
+from twitter import getMedia, getTweets, getTeam, addUserImages
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import func
@@ -44,16 +44,21 @@ def homeHelper(name):
 				tweets[i], tweets[j] = tweets[j], tweets[i]
 
 	topTweets = []
-	if len(tweets) > 8:
-		for i in range(8):
+	if len(tweets) > 6:
+		for i in range(6):
 			topTweets.append(tweets[i])
 	else:
 		for i in range(len(tweets)):
 			topTweets.append(tweets[i])
 
+	# get profile pics for tweets
+	pics = []
+	for tweet in topTweets:
+		pics.append(addUserImages(tweet.tweet_id))
+
 	# return jsonify(Tweets = [m.serialize for m in topTweets])
 
-	return render_template('search.html', team=team, media=topMedia, tweets=topTweets)
+	return render_template('search.html', team=team, media=topMedia, tweets=topTweets, pics=pics)
 
 
 # add route where user types in search term and then will use that as a parameter for getTweets()
